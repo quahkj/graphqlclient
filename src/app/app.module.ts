@@ -7,7 +7,11 @@ import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';
 
 import { AppComponent } from './app.component';
 
-const client = new ApolloClient();
+const client = new ApolloClient({
+  networkInterface: createNetworkInterface({
+    uri: 'https://cortex.equiem.com.au/v1/graphql'
+  }),
+});
 
 export function provideClient(): ApolloClient {
   return client;
