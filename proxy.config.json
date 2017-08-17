@@ -1,0 +1,5 @@
+{
+  "/graphql": {
+    "target": "https://cortex.equiem.com.au/v1"
+  }
+}
