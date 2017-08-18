@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { DatePipe } from '@angular/common';
 import { Apollo } from 'apollo-angular';
 import gql from 'graphql-tag';
 
@@ -19,7 +20,7 @@ const queryString = gql`
             targets : $targets,
         ) {
           TS
-          VL  
+          VL
         }
       }
 `;
@@ -30,11 +31,15 @@ const queryString = gql`
   styleUrls: ['./app.component.css']
 })
 export class AppComponent implements OnInit {
-  result: any[];
+  result: any[] = [];
+  ts: string[] = [];
+  vl: number[] = [];
+  data: any;
 
-  constructor(private apollo: Apollo) {}
+  constructor(private apollo: Apollo, private datePipe: DatePipe) {}
 
   ngOnInit() {
+
     this.apollo.watchQuery<QueryResponse>({
       query: queryString,
       variables: {
@@ -49,6 +54,21 @@ export class AppComponent implements OnInit {
     }).subscribe(({data}) => {
       this.result = data.multiMetrics;
       console.log("result = " + JSON.stringify(this.result));
+      // Construct data array for graph
+      this.result.forEach(val => {
+        let dt = this.datePipe.transform(val.TS, 'medium');
+        this.ts.push(dt);
+        this.vl.push(val.VL);
+        this.data = {
+             labels: this.ts,
+             datasets: [
+                 {
+                     label: 'VL',
+                     data: this.vl
+                 }
+             ]
+         }
+      });
     })
   }
 }

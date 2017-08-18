@@ -4,6 +4,8 @@ import { ApolloModule } from 'apollo-angular';
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';
+import { ChartModule } from 'primeng/primeng';
+import { DatePipe } from '@angular/common';
 
 import { AppComponent } from './app.component';
 
@@ -15,7 +17,7 @@ const client = new ApolloClient({
 
 export function provideClient(): ApolloClient {
   return client;
-} 
+}
 
 @NgModule({
   declarations: [
@@ -23,9 +25,10 @@ export function provideClient(): ApolloClient {
   ],
   imports: [
     BrowserModule,
+    ChartModule,
     ApolloModule.forRoot(provideClient)
   ],
-  providers: [],
+  providers: [DatePipe],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

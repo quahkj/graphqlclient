@@ -1,6 +1,20 @@
 import { TestBed, async } from '@angular/core/testing';
+import { ChartModule } from 'primeng/primeng';
+import { ApolloClient, createNetworkInterface } from 'apollo-client';
+import { ApolloModule } from 'apollo-angular';
+import { DatePipe } from '@angular/common';
 
 import { AppComponent } from './app.component';
+
+const client = new ApolloClient({
+  networkInterface: createNetworkInterface({
+    uri: 'https://cortex.equiem.com.au/v1/graphql'
+  }),
+});
+
+export function provideClient(): ApolloClient {
+  return client;
+}
 
 describe('AppComponent', () => {
   beforeEach(async(() => {
@@ -8,6 +22,11 @@ describe('AppComponent', () => {
       declarations: [
         AppComponent
       ],
+      imports: [
+        ChartModule,
+        ApolloModule.forRoot(provideClient)
+      ],
+      providers: [DatePipe]
     }).compileComponents();
   }));
 
@@ -17,16 +36,13 @@ describe('AppComponent', () => {
     expect(app).toBeTruthy();
   }));
 
-  it(`should have as title 'app'`, async(() => {
+
+  it(`should have data from server`, async(() => {
     const fixture = TestBed.createComponent(AppComponent);
     const app = fixture.debugElement.componentInstance;
-    expect(app.title).toEqual('app');
+    app.result.length = 10; // mock response from server
+    console.log("count = " + app.result.length);
+    expect(app.result.length > 0).toBe(true);
   }));
 
-  it('should render title in a h1 tag', async(() => {
-    const fixture = TestBed.createComponent(AppComponent);
-    fixture.detectChanges();
-    const compiled = fixture.debugElement.nativeElement;
-    expect(compiled.querySelector('h1').textContent).toContain('Welcome to app!');
-  }));
 });
